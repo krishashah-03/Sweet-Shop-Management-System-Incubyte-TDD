@@ -34,6 +34,9 @@ backend/
 ├── db.js                   # MongoDB connection logic
 ├── .env                    # Database URI and config
 ```
+Here are some preview for this:
+![Test Results](screenshots/Screenshot%202025-07-17%20015751.png)
+
 🧪 Testing Strategy (TDD)
 All routes are covered by automated tests:
 

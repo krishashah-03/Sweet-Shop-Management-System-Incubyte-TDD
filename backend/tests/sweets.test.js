@@ -108,4 +108,12 @@ describe('POST /sweets', () => {
         expect(res.body.message).toMatch(/deleted/i);
     });
 
+    it('should return an error when trying to delete a non-existent sweet ID', async () => {
+        const res = await request(app).delete('/sweets/9999'); // ID does not exist
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toHaveProperty('error');
+        expect(res.body.error).toMatch(/not found/i); // Optional message check
+    });
+
 });

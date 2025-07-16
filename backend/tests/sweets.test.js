@@ -65,4 +65,30 @@ describe('POST /sweets', () => {
         expect(res.statusCode).toBe(400);
         expect(res.body).toHaveProperty('error');
     });
+
+    it('should return a list of all sweets', async () => {
+        // Create two sample sweets first
+        await request(app).post('/sweets').send({
+            id: 1005,
+            name: 'Soan Papdi',
+            category: 'Pastry',
+            price: 20,
+            quantity: 10
+        });
+
+        await request(app).post('/sweets').send({
+            id: 1006,
+            name: 'Peda',
+            category: 'Milk-Based',
+            price: 15,
+            quantity: 25
+        });
+
+        const res = await request(app).get('/sweets');
+
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThanOrEqual(2);
+    });
+
 });

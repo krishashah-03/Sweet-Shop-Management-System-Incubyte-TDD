@@ -91,4 +91,21 @@ describe('POST /sweets', () => {
         expect(res.body.length).toBeGreaterThanOrEqual(2);
     });
 
+    it('should delete a sweet by ID', async () => {
+        const sweet = {
+            id: 1007,
+            name: 'Besan Ladoo',
+            category: 'Nut-Based',
+            price: 20,
+            quantity: 15
+        };
+
+        await request(app).post('/sweets').send(sweet);
+
+        // Delete the sweet
+        const res = await request(app).delete(`/sweets/${sweet.id}`);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toMatch(/deleted/i);
+    });
+
 });

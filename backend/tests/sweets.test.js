@@ -47,5 +47,22 @@ describe('POST /sweets', () => {
         expect(res.body).toHaveProperty('error');
     });
 
+    it('should reject duplicate sweet IDs', async () => {
+        const sweetData = {
+            id: 1004,
+            name: 'Rasgulla',
+            category: 'Milk-Based',
+            price: 25,
+            quantity: 30
+        };
 
+        // First insertion-Successful
+        await request(app).post('/sweets').send(sweetData);
+
+        // Second insertion with same ID — should fail
+        const res = await request(app).post('/sweets').send(sweetData);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body).toHaveProperty('error');
+    });
 });

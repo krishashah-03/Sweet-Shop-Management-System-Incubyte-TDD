@@ -17,4 +17,19 @@ describe('POST /sweets', () => {
     expect(res.body).toHaveProperty('name', 'Kaju Katli');
     expect(res.body).toHaveProperty('category', 'Nut-Based');
   });
+
+  it('should fail if required fields are missing', async () => {
+  const res = await request(app)
+    .post('/sweets')
+    .send({
+      // intentional omit
+      id: 1002,
+      price: 30,
+      quantity: 15
+    });
+
+  expect(res.statusCode).toBe(400); 
+  expect(res.body).toHaveProperty('error');
+});
+
 });

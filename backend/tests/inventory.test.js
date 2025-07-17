@@ -1,30 +1,62 @@
+const request = require('supertest');
+const mongoose = require('mongoose');
+const app = require('../app');
+const Sweet = require('../models/Sweet');
+require('dotenv').config();
+
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGO_URI);
+});
+
+beforeEach(async () => {
+  await Sweet.deleteMany({});
+  await Sweet.create({
+    id: 1001,
+    name: 'Patisa',
+    category: 'Nut-Based',
+    price: 30,
+    quantity: 10
+  });
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
+});
+
 describe('Inventory Management Tests', () => {
   it('should decrease quantity when sweet is purchased', async () => {
-    await request(app).post('/sweets').send({
-      id: 3001,
-      name: 'Imarti',
-      category: 'Milk-Based',
-      price: 10,
-      quantity: 5
+    const res = await request(app).post('/sweets/purchase').send({
+      id: 1001,
+      quantity: 2
     });
-
-    const res = await request(app).post('/sweets/purchase').send({ id: 3001, quantity: 2 });
-
     expect(res.statusCode).toBe(200);
-    expect(res.body.quantity).toBe(3); // original 5 - purchased 2
+    expect(res.body.quantity).toBe(8);
   });
 
   it('should fail purchase if stock is insufficient', async () => {
-    const res = await request(app).post('/sweets/purchase').send({ id: 3001, quantity: 10 });
-
+    const res = await request(app).post('/sweets/purchase').send({
+      id: 1001,
+      quantity: 20
+    });
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty('error');
   });
 
   it('should restock sweet by quantity', async () => {
-    const res = await request(app).post('/sweets/restock').send({ id: 3001, quantity: 5 });
-
+    const res = await request(app).post('/sweets/restock').send({
+      id: 1001,
+      quantity: 5
+    });
     expect(res.statusCode).toBe(200);
-    expect(res.body.quantity).toBe(8); // previous 3 + restock 5
+    expect(res.body.quantity).toBe(15);
+  });
+
+  it('should fail restock with negative quantity', async () => {
+    const res = await request(app).post('/sweets/restock').send({
+      id: 1001,
+      quantity: -5
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty('error');
   });
 });

@@ -8,20 +8,18 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  if (mongoose.connection.readyState !== 0) {
-    await mongoose.disconnect();
-  }
+  await mongoose.disconnect();
 });
 
-describe('API Health & Error Tests', () => {
-  it('should return 200 for /health check route', async () => {
+describe('Health & Invalid Route Tests', () => {
+  it('should return 200 for /health check', async () => {
     const res = await request(app).get('/health');
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('status');
+    expect(res.body).toHaveProperty('status', 'ok');
   });
 
-  it('should return 404 for invalid route', async () => {
-    const res = await request(app).get('/nope');
+  it('should return 404 for unknown route', async () => {
+    const res = await request(app).get('/no-such-route');
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty('error');
   });

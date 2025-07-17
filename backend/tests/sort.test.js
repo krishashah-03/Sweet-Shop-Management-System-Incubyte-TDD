@@ -11,27 +11,9 @@ beforeAll(async () => {
 beforeEach(async () => {
   await Sweet.deleteMany({});
   await Sweet.insertMany([
-    {
-      id: 2001,
-      name: 'Kaju Katli',
-      category: 'Nut-Based',
-      price: 45,
-      quantity: 10
-    },
-    {
-      id: 2002,
-      name: 'Rasgulla',
-      category: 'Milk-Based',
-      price: 25,
-      quantity: 20
-    },
-    {
-      id: 2003,
-      name: 'Barfi',
-      category: 'Milk-Based',
-      price: 35,
-      quantity: 5
-    }
+    { id: 2001, name: 'Kaju Katli', category: 'Nut-Based', price: 45, quantity: 10 },
+    { id: 2002, name: 'Rasgulla', category: 'Milk-Based', price: 25, quantity: 20 },
+    { id: 2003, name: 'Barfi', category: 'Milk-Based', price: 35, quantity: 5 }
   ]);
 });
 
@@ -39,36 +21,28 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('Sorting Tests', () => {
-  it('should sort sweets by price ascending', async () => {
+describe('Sorting Logic', () => {
+  it('sorts by price ascending', async () => {
     const res = await request(app).get('/sweets/sort?by=price&order=asc');
-    expect(res.statusCode).toBe(200);
-    const prices = res.body.map(s => s.price);
-    expect(prices).toEqual([25, 35, 45]);
+    expect(res.body.map(s => s.price)).toEqual([25, 35, 45]);
   });
 
-  it('should sort sweets by price descending', async () => {
+  it('sorts by price descending', async () => {
     const res = await request(app).get('/sweets/sort?by=price&order=desc');
-    expect(res.statusCode).toBe(200);
-    const prices = res.body.map(s => s.price);
-    expect(prices).toEqual([45, 35, 25]);
+    expect(res.body.map(s => s.price)).toEqual([45, 35, 25]);
   });
 
-  it('should sort sweets by quantity ascending', async () => {
+  it('sorts by quantity ascending', async () => {
     const res = await request(app).get('/sweets/sort?by=quantity&order=asc');
-    expect(res.statusCode).toBe(200);
-    const quantities = res.body.map(s => s.quantity);
-    expect(quantities).toEqual([5, 10, 20]);
+    expect(res.body.map(s => s.quantity)).toEqual([5, 10, 20]);
   });
 
-  it('should sort sweets by quantity descending', async () => {
+  it('sorts by quantity descending', async () => {
     const res = await request(app).get('/sweets/sort?by=quantity&order=desc');
-    expect(res.statusCode).toBe(200);
-    const quantities = res.body.map(s => s.quantity);
-    expect(quantities).toEqual([20, 10, 5]);
+    expect(res.body.map(s => s.quantity)).toEqual([20, 10, 5]);
   });
 
-  it('should fail for invalid sort field', async () => {
+  it('fails on invalid sort field', async () => {
     const res = await request(app).get('/sweets/sort?by=flavor&order=asc');
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty('error');

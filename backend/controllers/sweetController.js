@@ -2,14 +2,33 @@ const Sweet = require('../models/Sweet');
 
 const createSweet = async (req, res) => {
   try {
-    const sweet = new Sweet(req.body);
-    await sweet.save();
-    res.status(201).json(sweet);
-  } catch (err) {
-    if (err.code === 11000) {
-      return res.status(400).json({ error: 'Sweet with this ID already exists' });
+    const { name, category, price, quantity } = req.body;
+
+    if (!name || !category || !price || !quantity) {
+      return res.status(400).json({ error: 'All fields are required' });
     }
-    res.status(400).json({ error: err.message });
+
+    const existingSweet = await Sweet.findOne({ name: new RegExp(`^${name}$`, 'i') });
+    if (existingSweet) {
+      return res.status(400).json({ error: 'Sweet with this name already exists' });
+    }
+
+    const latestSweet = await Sweet.findOne().sort({ id: -1 });
+    const nextId = latestSweet ? latestSweet.id + 1 : 1000;
+
+    const newSweet = new Sweet({
+      id: nextId,
+      name,
+      category,
+      price: parseInt(price),
+      quantity: parseInt(quantity),
+    });
+
+    const savedSweet = await newSweet.save();
+    res.status(201).json(savedSweet);
+  } catch (error) {
+    const status = error.name === 'ValidationError' ? 400 : 500;
+    res.status(status).json({ error: error.message });
   }
 };
 
@@ -37,12 +56,14 @@ const deleteSweet = async (req, res) => {
 const purchaseSweet = async (req, res) => {
   const { id, quantity } = req.body;
   try {
-    const sweet = await Sweet.findOne({ id: Number(id) }); // ✅ This line
+    const sweet = await Sweet.findOne({ id: Number(id) });
     if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
     if (sweet.quantity < quantity) return res.status(400).json({ error: 'Insufficient stock' });
 
     sweet.quantity -= quantity;
     await sweet.save();
+
+    console.log(`Original qty: ${sweet.quantity + quantity}, purchase: ${quantity}`);
     res.status(200).json(sweet);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -52,7 +73,7 @@ const purchaseSweet = async (req, res) => {
 const restockSweet = async (req, res) => {
   const { id, quantity } = req.body;
   try {
-    const sweet = await Sweet.findOne({ id: Number(id) }); // ✅ This line
+    const sweet = await Sweet.findOne({ id: Number(id) });
     if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
     if (quantity < 0) return res.status(400).json({ error: 'Invalid restock quantity' });
 
@@ -83,12 +104,10 @@ const searchSweets = async (req, res) => {
   }
 };
 
-
 const sortSweets = async (req, res) => {
   const { by = 'price', order = 'asc' } = req.query;
   const sortOrder = order === 'desc' ? -1 : 1;
 
-  // ✅ Validate allowed fields
   const validFields = ['price', 'quantity'];
   if (!validFields.includes(by)) {
     return res.status(400).json({ error: 'Invalid sort field' });

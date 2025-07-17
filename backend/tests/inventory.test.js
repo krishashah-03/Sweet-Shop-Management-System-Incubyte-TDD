@@ -23,8 +23,8 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe('Inventory Management Tests', () => {
-  it('should decrease quantity when sweet is purchased', async () => {
+describe('Inventory Management', () => {
+  it('should decrease quantity on purchase', async () => {
     const res = await request(app).post('/sweets/purchase').send({
       id: 1001,
       quantity: 2
@@ -33,7 +33,7 @@ describe('Inventory Management Tests', () => {
     expect(res.body.quantity).toBe(8);
   });
 
-  it('should fail purchase if stock is insufficient', async () => {
+  it('should fail if purchase quantity exceeds stock', async () => {
     const res = await request(app).post('/sweets/purchase').send({
       id: 1001,
       quantity: 20
@@ -42,7 +42,7 @@ describe('Inventory Management Tests', () => {
     expect(res.body).toHaveProperty('error');
   });
 
-  it('should restock sweet by quantity', async () => {
+  it('should increase quantity on restock', async () => {
     const res = await request(app).post('/sweets/restock').send({
       id: 1001,
       quantity: 5

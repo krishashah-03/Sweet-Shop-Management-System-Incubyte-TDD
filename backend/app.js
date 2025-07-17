@@ -6,15 +6,16 @@ const sweetsRoutes = require('./routes/sweets');
 const mongoose = require('mongoose');
 
 const app = express();
-
-connectDB();
+const cors = require('cors');
+app.use(cors()); 
 
 app.use(express.json());
 
 app.use('/sweets', sweetsRoutes);
 
+connectDB();
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'API is healthy' });
+  res.status(200).json({ status: "ok" });
 });
 
 app.use((req, res) => {

@@ -6,6 +6,9 @@ const createSweet = async (req, res) => {
     await sweet.save();
     res.status(201).json(sweet);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ error: 'Sweet with this ID already exists' });
+    }
     res.status(400).json({ error: err.message });
   }
 };
@@ -21,7 +24,7 @@ const getAllSweets = async (req, res) => {
 
 const deleteSweet = async (req, res) => {
   try {
-    const deleted = await Sweet.findOneAndDelete({ id: req.params.id });
+    const deleted = await Sweet.findOneAndDelete({ id: Number(req.params.id) });
     if (!deleted) {
       return res.status(404).json({ error: 'Sweet not found' });
     }
@@ -34,7 +37,7 @@ const deleteSweet = async (req, res) => {
 const purchaseSweet = async (req, res) => {
   const { id, quantity } = req.body;
   try {
-    const sweet = await Sweet.findOne({ id });
+    const sweet = await Sweet.findOne({ id: Number(id) }); // ✅ This line
     if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
     if (sweet.quantity < quantity) return res.status(400).json({ error: 'Insufficient stock' });
 
@@ -49,7 +52,7 @@ const purchaseSweet = async (req, res) => {
 const restockSweet = async (req, res) => {
   const { id, quantity } = req.body;
   try {
-    const sweet = await Sweet.findOne({ id });
+    const sweet = await Sweet.findOne({ id: Number(id) }); // ✅ This line
     if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
     if (quantity < 0) return res.status(400).json({ error: 'Invalid restock quantity' });
 
@@ -80,9 +83,16 @@ const searchSweets = async (req, res) => {
   }
 };
 
+
 const sortSweets = async (req, res) => {
   const { by = 'price', order = 'asc' } = req.query;
   const sortOrder = order === 'desc' ? -1 : 1;
+
+  // ✅ Validate allowed fields
+  const validFields = ['price', 'quantity'];
+  if (!validFields.includes(by)) {
+    return res.status(400).json({ error: 'Invalid sort field' });
+  }
 
   try {
     const sweets = await Sweet.find({}).sort({ [by]: sortOrder });

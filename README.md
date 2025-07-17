@@ -1,77 +1,130 @@
-🍬 Sweet Shop Management System — Backend
-This is the backend implementation of a Sweet Shop Management System, built with Node.js, Express, MongoDB, and Mongoose. It follows a Test-Driven Development (TDD) workflow and offers CRUD operations, inventory management, search, sorting, and robust validation.
+# 🍬 Sweet Shop Management System (TDD + MongoDB)
 
-🧰 Tech Stack
-Node.js
+A backend application for managing a sweet shop's inventory, built with **Test-Driven Development** using **Node.js, Express, and MongoDB**. Includes CRUD operations, purchase/restock logic, filtering, sorting, and a full Jest test suite.
 
-Express.js
+## 🚀 Tech Stack
 
-MongoDB + Mongoose
+| Technology | Description |
+|------------|-------------|
+| Node.js | JavaScript runtime |
+| Express.js | API routing |
+| MongoDB | NoSQL database |
+| Mongoose | MongoDB ODM |
+| Jest | Test framework |
+| Supertest | HTTP integration testing |
+| dotenv | Manage environment variables |
 
-Jest + Supertest for automated testing
+## 📁 Project Structure
 
-Dotenv for environment configuration
 ```
 backend/
-│
-├── models/
-│   └── Sweet.js            # Mongoose schema for sweets
-│
+├── app.js                  # Main server entry point
+├── db.js                   # MongoDB connection
+├── .env                    # Environment variables
+├── jest.setup.js           # Test DB setup/teardown
+├── package.json            # Scripts & metadata
 ├── controllers/
-│   └── sweetController.js  # Logic for CRUD, search, sort, purchase, restock
-│
+│   └── sweetController.js  # Business logic
+├── models/
+│   └── Sweet.js            # Mongoose schema
 ├── routes/
-│   └── sweets.js           # Express router for sweets endpoints
-│
-├── tests/
-│   ├── api.test.js         # Health + 404
-│   ├── validation.test.js  # Field validation errors
-│   ├── search.test.js      # Search by name, category, price
-│   ├── sort.test.js        # Sort by price or quantity
-│   ├── inventory.test.js   # Purchase & restock logic
-│
-├── app.js                  # Entry point, routes and middleware
-├── db.js                   # MongoDB connection logic
-├── .env                    # Database URI and config
+│   └── sweets.js           # Express routes
+└── tests/
+    ├── api.test.js
+    ├── inventory.test.js
+    ├── search.test.js
+    ├── sort.test.js
+    ├── sweets.test.js
+    └── validation.test.js
 ```
-Here are some preview for this:
-![Test Results](screenshots/Screenshot%202025-07-17%20015751.png)
 
-🧪 Testing Strategy (TDD)
-All routes are covered by automated tests:
+## ✅ Features
 
-✔️ Sweet creation and validation
+- Add new sweets with validation
+- Delete sweets by ID
+- Purchase sweets (decrease quantity)
+- Restock sweets (increase quantity)
+- Filter by name, category, and price range
+- Sort by price or quantity
+- Jest + Supertest test suite connected to MongoDB
 
-✔️ Deletion with error handling
+## ⚙️ Setup Instructions
 
-✔️ Search queries (case-insensitive, filtered)
+### 1️⃣ Clone the repository
 
-✔️ Sort operations
+```bash
+git clone https://github.com/your-username/sweet-shop-backend.git
+cd sweet-shop-backend/backend
+```
 
-✔️ Inventory adjustments
+### 2️⃣ Install dependencies
 
-✔️ Health check and bad routes
+```bash
+npm install
+```
 
-Each test file inserts fixed static data using POST /sweets so that tests run cleanly without direct Mongoose calls.
+### 3️⃣ Configure environment variables
 
-🛢️ Mongoose Usage
-Sweet schema includes:
+Create a `.env` file in the project root:
 
-id (unique, required)
+```env
+PORT=8080
+MONGO_URI=mongodb://localhost:27017/sweetshop
+NODE_ENV=test
+```
 
-name (required, trimmed)
+> ✅ Make sure MongoDB is running locally.
 
-category (validated from enum)
+## 🧪 Running Tests
 
-price and quantity (non-negative, required)
+```bash
+npm test
+```
 
-Custom error responses are defined for:
+This runs all test files:
 
-Duplicate IDs
+- `api.test.js`
+- `inventory.test.js`
+- `search.test.js`
+- `sort.test.js`
+- `sweets.test.js`
+- `validation.test.js`
 
-Invalid categories
+✅ All test cases are connected to MongoDB and teardown properly.
 
-Negative values
+## 🚀 Start the Server
 
-Non-existent documents
+```bash
+npm start
+```
 
+Visit in browser:
+
+```
+http://localhost:8080/health
+```
+
+Expected output:
+
+```json
+{ "status": "API is healthy" }
+```
+
+## 🔗 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Check API health |
+| GET | `/sweets` | Get all sweets |
+| POST | `/sweets` | Add new sweet |
+| DELETE | `/sweets/:id` | Delete sweet by ID |
+| POST | `/sweets/purchase` | Purchase sweet (reduce quantity) |
+| POST | `/sweets/restock` | Restock sweet (increase quantity) |
+| GET | `/sweets/search` | Filter by name/category/price |
+| GET | `/sweets/sort` | Sort sweets by price or quantity |
+
+
+## 👨‍💻 Author
+
+**Krisha Shah**   
+🔗 GitHub: [github.com/krishashah-03](https://github.com/krishashah-03)

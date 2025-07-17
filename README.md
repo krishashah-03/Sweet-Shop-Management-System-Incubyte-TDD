@@ -1,130 +1,150 @@
-# 🍬 Sweet Shop Management System (TDD + MongoDB)
+# Sweet Shop Management System
 
-A backend application for managing a sweet shop's inventory, built with **Test-Driven Development** using **Node.js, Express, and MongoDB**. Includes CRUD operations, purchase/restock logic, filtering, sorting, and a full Jest test suite.
+## 📌 Overview
 
-## 🚀 Tech Stack
+A full-stack inventory management system to manage and track sweet stock in real time. Built with modular architecture, responsive frontend, robust backend, and test-driven development.
 
-| Technology | Description |
-|------------|-------------|
-| Node.js | JavaScript runtime |
-| Express.js | API routing |
-| MongoDB | NoSQL database |
-| Mongoose | MongoDB ODM |
-| Jest | Test framework |
-| Supertest | HTTP integration testing |
-| dotenv | Manage environment variables |
+---
+### 🎥 Demo Video
 
-## 📁 Project Structure
+👉 [Watch the demo on YouTube](https://youtu.be/HSJhINojRHQ)
 
-```
-backend/
-├── app.js                  # Main server entry point
-├── db.js                   # MongoDB connection
-├── .env                    # Environment variables
-├── jest.setup.js           # Test DB setup/teardown
-├── package.json            # Scripts & metadata
-├── controllers/
-│   └── sweetController.js  # Business logic
-├── models/
-│   └── Sweet.js            # Mongoose schema
-├── routes/
-│   └── sweets.js           # Express routes
-└── tests/
-    ├── api.test.js
-    ├── inventory.test.js
-    ├── search.test.js
-    ├── sort.test.js
-    ├── sweets.test.js
-    └── validation.test.js
-```
+## ✅ Test Results
 
-## ✅ Features
+All backend test suites passed successfully using **Jest** and **Supertest**:
 
-- Add new sweets with validation
-- Delete sweets by ID
-- Purchase sweets (decrease quantity)
-- Restock sweets (increase quantity)
-- Filter by name, category, and price range
-- Sort by price or quantity
-- Jest + Supertest test suite connected to MongoDB
+![Backend Test Results](files/img.png)
 
-## ⚙️ Setup Instructions
+---
 
-### 1️⃣ Clone the repository
 
-```bash
-git clone https://github.com/your-username/sweet-shop-backend.git
-cd sweet-shop-backend/backend
-```
+## 🔧 Tech Stack
 
-### 2️⃣ Install dependencies
+| Layer    | Tools & Libraries                                        |
+| -------- | -------------------------------------------------------- |
+| Frontend | React, Tailwind CSS, Lucide Icons, Axios, React Toastify |
+| Backend  | Node.js, Express, MongoDB (Mongoose), dotenv             |
+| Testing  | Jest, Supertest (MongoDB test instance)                  |
+| DevTools | GitHub, VSCode, `npm`, Postman                           |
+
+---
+
+## 📦 Features
+
+### ✅ Backend
+
+* Create, delete, restock, and purchase sweets
+* Search sweets by name (case-insensitive)
+* Sort by price or quantity
+* Robust validation (schema-enforced via Mongoose)
+* TDD-tested routes with clear error handling
+
+### 🖼️ Frontend
+
+* Responsive dashboard with Tailwind
+* Sweet listing via `SweetCard`
+* Add new sweet via `AddSweetForm`
+* Real-time actions: Purchase, Restock, Delete
+* Toast alerts for feedback
+
+---
+
+## 🚀 How to Run
+
+### ✅ Clone & Install
 
 ```bash
+git clone https://github.com/krishashah-03/Sweet-Shop-Management-System-Incubyte-TDD.git
+cd Sweet-Shop-Management-System-Incubyte-TDD
 npm install
 ```
 
-### 3️⃣ Configure environment variables
-
-Create a `.env` file in the project root:
-
-```env
-PORT=8080
-MONGO_URI=mongodb://localhost:27017/sweetshop
-NODE_ENV=test
-```
-
-> ✅ Make sure MongoDB is running locally.
-
-## 🧪 Running Tests
+### 📂 Backend Setup
 
 ```bash
-npm test
+cd backend
+touch .env
 ```
 
-This runs all test files:
+Add to `.env`:
 
-- `api.test.js`
-- `inventory.test.js`
-- `search.test.js`
-- `sort.test.js`
-- `sweets.test.js`
-- `validation.test.js`
+```env
+MONGO_URI=your-mongodb-connection-string
+PORT=8080
+```
 
-✅ All test cases are connected to MongoDB and teardown properly.
-
-## 🚀 Start the Server
+Run server:
 
 ```bash
 npm start
 ```
 
-Visit in browser:
+### 📦 Frontend Setup
 
-```
-http://localhost:8080/health
-```
-
-Expected output:
-
-```json
-{ "status": "API is healthy" }
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-## 🔗 API Endpoints
+Frontend: `http://localhost:5173`
+Backend: `http://localhost:8080`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Check API health |
-| GET | `/sweets` | Get all sweets |
-| POST | `/sweets` | Add new sweet |
-| DELETE | `/sweets/:id` | Delete sweet by ID |
-| POST | `/sweets/purchase` | Purchase sweet (reduce quantity) |
-| POST | `/sweets/restock` | Restock sweet (increase quantity) |
-| GET | `/sweets/search` | Filter by name/category/price |
-| GET | `/sweets/sort` | Sort sweets by price or quantity |
+---
 
+## 🧪 Running Tests
 
-## 👨‍💻 Author
+Run all backend tests:
 
-**Krisha Shah**   
-🔗 GitHub: [github.com/krishashah-03](https://github.com/krishashah-03)
+```bash
+npm test
+```
+
+### ✅ Test Coverage
+
+| Test File            | Coverage Description                             |
+| -------------------- | ------------------------------------------------ |
+| `validation.test.js` | Field requirements, type checks, duplication     |
+| `api.test.js`        | Invalid routes, 404s, server errors              |
+| `inventory.test.js`  | Purchase & restock logic                         |
+| `search.test.js`     | Name-based searching (partial, case-insensitive) |
+| `sort.test.js`       | Sorting by price and quantity                    |
+| `sweets.test.js`     | Core sweet operations (add/delete)               |
+
+---
+
+## 📄 Folder Structure
+
+```bash
+frontend/
+  ├── components/
+  │   ├── AddSweetForm.jsx
+  │   ├── FilterSortBar.jsx
+  │   └── SweetCard.jsx
+  ├── pages/
+  │   └── Home.jsx
+  └── services/api.js
+
+backend/
+  ├── models/Sweet.js
+  ├── controllers/sweetController.js
+  ├── routes/sweetRoutes.js
+  ├── tests/
+  │   ├── validation.test.js
+  │   ├── api.test.js
+  │   ├── inventory.test.js
+  │   ├── search.test.js
+  │   ├── sort.test.js
+  │   └── sweets.test.js
+  ├── app.js
+  └── db.js
+```
+
+---
+
+## 🙌 Credits
+
+Built by **Krisha Shah**
+
+---
+
